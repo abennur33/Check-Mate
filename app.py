@@ -22,10 +22,13 @@ app = Flask(__name__)
 
 def process_text_and_extract_keywords(text_input):
     # Initialize SentenceTransformer
+    #print("1")
     model = SentenceTransformer('all-MiniLM-L6-v2')
-
+    #print("2")
     def preprocess_text(text):
+        #print("3")
         text = re.sub(r'[^A-Za-z\s]', '', text)
+        #print("4")
         return text.lower()
 
     def extract_keywords(text, max_keywords=5):
@@ -58,7 +61,7 @@ def process_text_and_extract_keywords(text_input):
                     cluster_keywords.extend(extract_keywords(sentence))
             unique_keywords = list(set(cluster_keywords))
             all_keywords.extend(unique_keywords)
-
+    print("joined")
     return ' '.join(all_keywords)
 
 def get_confidence(context, claim):
@@ -144,9 +147,7 @@ def search():
         data = request.get_json()
         source = data.get('source', '')
         query = data.get('query', '')
-
         query = process_text_and_extract_keywords(query)
-
         if source == 'gschol':
             result = gschol_search(query)
         elif source == 'snopes':

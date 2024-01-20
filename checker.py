@@ -15,7 +15,7 @@ def get_confidence(context, claim):
     is_claim_true = fact_checker.validate_with_replicas(context, claim)
     return is_claim_true['Y'] * 100
 
-#print(get_confidence("Amanda writes code for Hugging Face", "Amanda is an Engineer"))
+print(get_confidence("Amanda writes code for Hugging Face", "Amanda is an Engineer"))
 # if __name__ == "__main__":
 #     a = str(sys.argv[1])
 #     b = str(sys.argv[2])
