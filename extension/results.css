@@ -1,0 +1,33 @@
+body {
+    width: 20rem;
+    height: 16rem;
+    background-color: #CAF0F8;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+#title1 {
+    text-align: center;
+}
+
+#result-text {
+    text-align: center;
+}
+
+#percentage {
+    text-align: center;
+}
+
+#percentage-bar-container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#percentage-bar {
+    height: 20px;
+    width: 0;
+    background-color: #4caf50;
+    transition: width 0.5s;
+}
