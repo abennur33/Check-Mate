@@ -1,8 +1,23 @@
 from flask import Flask, request, jsonify
 from bs4 import BeautifulSoup
 import requests
+from transformers import (
+    GPT2LMHeadModel,
+    GPT2Tokenizer,
+)
+
+from fact_checking import FactChecker
+
+import sys
 
 app = Flask(__name__)
+
+def get_confidence(context, claim):
+    tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+    fact_checking_model = GPT2LMHeadModel.from_pretrained('fractalego/fact-checking')
+    fact_checker = FactChecker(fact_checking_model, tokenizer)
+    is_claim_true = fact_checker.validate_with_replicas(context, claim)
+    return is_claim_true['Y'] * 100
 
 def gschol_search(query):
     newq = query.replace(" ", "+")
@@ -21,7 +36,23 @@ def gschol_search(query):
             href_value = a_element.get('href')
             href_values.append(href_value)
 
-    return href_values
+    maxp = 0
+    maxurl = ""
+
+    for href in href_values:
+        url = "https://scholar.google.com" + href
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        p_elements = soup.find_all('p')
+        for p in p_elements:
+            p_text = p.get_text()
+            conf = get_confidence(p_text, query)
+            if conf > maxp:
+                maxp = conf
+                maxurl = url
+    
+    return {"url": maxurl, "confidence": maxp}
+    
 
 def snopes_search(query):
     newq = query.replace(" ", "%20")
@@ -40,7 +71,23 @@ def snopes_search(query):
             href_value = input_element.get('value')
             href_values.append(href_value)
 
-    return href_values
+    
+    maxp = 0
+    maxurl = ""
+
+    for href in href_values:
+        url = "https://scholar.google.com" + href
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        p_elements = soup.find_all('p')
+        for p in p_elements:
+            p_text = p.get_text()
+            conf = get_confidence(p_text, query)
+            if conf > maxp:
+                maxp = conf
+                maxurl = url
+    
+    return {"url": maxurl, "confidence": maxp}
 
 @app.route('/search', methods=['POST'])
 def search():
@@ -56,7 +103,7 @@ def search():
         else:
             return jsonify({'error': 'Invalid source. Please provide either "gschol" or "snopes".'}), 400
 
-        return jsonify({'result': result})
+        return jsonify({'percent': result.confidence, 'url': result.url})
 
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
