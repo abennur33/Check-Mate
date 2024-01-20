@@ -166,14 +166,8 @@ def search():
         source = data.get('source', '')
         query = data.get('query', '')
 
-        query = process_text_and_extract_keywords(query)
-
-        if source == 'gschol':
-            result = gschol_search(query)
-        elif source == 'snopes':
-            result = snopes_search(query)
-        else:
-            return jsonify({'error': 'Invalid source. Please provide either "gschol" or "snopes".'}), 400
+        testpercent = 100
+        testval = source + " " + query + " test"
 
         return jsonify({'percent': testpercent, 'url': testval})
 
