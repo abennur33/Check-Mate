@@ -19,3 +19,4 @@ if __name__ == "__main__":
     a = str(sys.argv[1])
     b = str(sys.argv[2])
     print(get_confidence(a, b))
+#test
