@@ -8,9 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Send a message to the background script to initiate the API request
         // In popup.js
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            const activeTab = tabs[0];
-            chrome.tabs.sendMessage(activeTab.id, { action: 'startApiRequest', option: selectedOption });
-        });
+        chrome.runtime.sendMessage(activeTab.id, { action: 'startApiRequest', option: selectedOption });
     });
 });
