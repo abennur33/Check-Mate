@@ -1,18 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
     var selectedOption;
 
-    document.getElementById('button').addEventListener('click', function () {
-        selectedOption = document.querySelector('input[name="options"]:checked').value;
-        localStorage.setItem('selectedOption', selectedOption);
-        hideLoadingScreen();
-    });
-
     document.getElementById('check-button').addEventListener('click', function () {
-        window.location.href = chrome.runtime.getURL('loading-screen.html?option=' + selectedOption);
-    });
+        // Get the selected option
+        selectedOption = document.querySelector('input[name="options"]:checked').value;
+        console.log(selectedOption);
 
-    function hideLoadingScreen() {
-        var loadingScreen = document.querySelector('.ring');
-        loadingScreen.style.display = 'none';
-    }
+        // Send a message to the background script to initiate the API request
+        // In popup.js
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            const activeTab = tabs[0];
+            chrome.tabs.sendMessage(activeTab.id, { action: 'startApiRequest', option: selectedOption });
+        });
+    });
 });

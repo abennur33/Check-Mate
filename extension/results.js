@@ -1,21 +1,28 @@
 document.addEventListener('DOMContentLoaded', function () {
-    var randomPercentage = Math.floor(Math.random() * 101);
-    displayResults(randomPercentage);
+    // Handle the display of results
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message.action === 'displayData') {
+            // Display the percent and url
+            displayResults(message.data);
+        }
+    });
 });
 
-function displayResults(percentage) {
-    var percentageElement = document.getElementById('percentage');
+function displayResults(data) {
+    var percentElement = document.getElementById('percentage');
+    var urlElement = document.getElementById('url-result');
     var percentageBar = document.getElementById('percentage-bar');
 
-    percentageElement.textContent = 'Random Percentage: ' + percentage + '%';
+    percentElement.textContent = `Percentage: ${data.percent}%`;
+    urlElement.textContent = `URL: ${data.url}`;
 
-    if (percentage < 30) {
+    if (data.percent < 30) {
         percentageBar.style.backgroundColor = 'red';
-    } else if (percentage >= 30 && percentage < 70) {
+    } else if (data.percent >= 30 && data.percent < 70) {
         percentageBar.style.backgroundColor = 'yellow';
     } else {
         percentageBar.style.backgroundColor = 'green';
     }
 
-    percentageBar.style.width = percentage + '%';
+    percentageBar.style.width = data.percent + '%';
 }
