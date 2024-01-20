@@ -13,6 +13,7 @@ import sys
 app = Flask(__name__)
 
 def get_confidence(context, claim):
+    print("fact checking!")
     tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     fact_checking_model = GPT2LMHeadModel.from_pretrained('fractalego/fact-checking')
     fact_checker = FactChecker(fact_checking_model, tokenizer)
@@ -40,16 +41,15 @@ def gschol_search(query):
     maxurl = ""
 
     for href in href_values:
-        url = "https://scholar.google.com" + href
+        url = href
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        p_elements = soup.find_all('p')
-        for p in p_elements:
-            p_text = p.get_text()
-            conf = get_confidence(p_text, query)
-            if conf > maxp:
-                maxp = conf
-                maxurl = url
+        p_text = lambda soup: ''.join([p.get_text() for p in soup.find_all('p')])
+        
+        conf = get_confidence(p_text, query)
+        if conf > maxp:
+            maxp = conf
+            maxurl = url
     
     return {"url": maxurl, "confidence": maxp}
     
@@ -76,7 +76,7 @@ def snopes_search(query):
     maxurl = ""
 
     for href in href_values:
-        url = "https://scholar.google.com" + href
+        url = href
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         p_elements = soup.find_all('p')
