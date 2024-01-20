@@ -1,0 +1,10 @@
+Requirements :
+1)import re module.
+2)import nltk library
+3)import sent_tokenize, word_tokenize from nlt_tokenize
+4)import stopwords from ntlk.corpus
+5)import pos_tag from nltk.tag
+6)import SentenceTransformer class from sentence_transformers library
+7)import KMeans algorithm from scikit-learn(sklearn) library
+8)import cosine_similarity function from sklearn.metrics.pairwise
+9)import numpy (NumPy library)
