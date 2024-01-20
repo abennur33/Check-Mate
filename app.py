@@ -20,13 +20,13 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-def process_text_and_extract_keywords(text_input):
-    # Initialize SentenceTransformer
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+# def process_text_and_extract_keywords(text_input):
+#     # Initialize SentenceTransformer
+#     model = SentenceTransformer('all-MiniLM-L6-v2')
 
-    def preprocess_text(text):
-        text = re.sub(r'[^A-Za-z\s]', '', text)
-        return text.lower()
+#     def preprocess_text(text):
+#         text = re.sub(r'[^A-Za-z\s]', '', text)
+#         return text.lower()
 
 #     def extract_keywords(text, max_keywords=5):
 #         tokens = word_tokenize(text)
@@ -47,19 +47,19 @@ def process_text_and_extract_keywords(text_input):
 #     sentences = sent_tokenize(text_input)
 #     all_keywords = []
 
-    if len(sentences) == 1:
-        all_keywords.extend(extract_keywords(sentences[0]))
-    else:
-        clusters = cluster_sentences(sentences)
-        for cluster in range(max(clusters) + 1):
-            cluster_keywords = []
-            for i, sentence in enumerate(sentences):
-                if clusters[i] == cluster:
-                    cluster_keywords.extend(extract_keywords(sentence))
-            unique_keywords = list(set(cluster_keywords))
-            all_keywords.extend(unique_keywords)
+    # if len(sentences) == 1:
+    #     all_keywords.extend(extract_keywords(sentences[0]))
+    # else:
+    #     clusters = cluster_sentences(sentences)
+    #     for cluster in range(max(clusters) + 1):
+    #         cluster_keywords = []
+    #         for i, sentence in enumerate(sentences):
+    #             if clusters[i] == cluster:
+    #                 cluster_keywords.extend(extract_keywords(sentence))
+    #         unique_keywords = list(set(cluster_keywords))
+    #         all_keywords.extend(unique_keywords)
 
-    return ' '.join(all_keywords)
+    # return ' '.join(all_keywords)
 
 # def get_confidence(context, claim):
 #     print("fact checking!")
