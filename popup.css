@@ -1,0 +1,16 @@
+body {
+  width: 20rem;
+  height: 15rem;
+  background-color: #CAF0F8;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
+
+#check-button {
+  display: block;
+  margin: auto;
+  margin-top: 25px;
+}
+
+#title {
+  text-align: center;
+}
