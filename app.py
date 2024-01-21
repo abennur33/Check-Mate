@@ -32,6 +32,19 @@ def contains_no_words(main_string, words_to_check):
     # If no matching words are found
     return True
 
+def contains_25_percent_or_less(main_string, words_to_check):
+    # Split the main string into words
+    main_words = set(main_string.split())
+
+    # Count the number of words from words_to_check present in main_words
+    matching_words_count = sum(1 for word in words_to_check.split() if word in main_words)
+
+    # Calculate the percentage
+    percentage = (matching_words_count / len(set(words_to_check.split()))) * 100
+
+    # Return True if the percentage is 25% or less
+    return percentage <= 25
+
 def condense_strings(input_strings):
     combined_strings = []
     current_chunk = ""
@@ -153,12 +166,17 @@ def gschol_search(query):
         for p in p_objects:
             print(f"{cnt}/{size}")
             cnt += 1
-            if contains_no_words(p.get_text(strip=True), query):
+            if size > 100 and contains_25_percent_or_less(p.get_text(strip=True), query):
+                print("skipped")
+                continue
+            elif size > 25 and contains_no_words(p.get_text(strip=True), query):
                 print("skipped")
                 continue
             conf = get_confidence(p.get_text(strip=True), query)
             if conf > maxc:
                 maxc = conf
+            if maxc == 100:
+                break
         # p_text = get_p_text(soup)
 
         # if p_text == "":
@@ -170,6 +188,9 @@ def gschol_search(query):
         if maxc < minp:
             minp = maxc
             minurl = url
+        print(maxp)
+        if maxp == 100:
+            break
 
     if maxp < 50:
         return {"url": minurl, "confidence": minp}
@@ -221,16 +242,23 @@ def snopes_search(query):
         for p in p_objects:
             print(f"{cnt}/{size}")
             cnt += 1
-            if contains_no_words(p.get_text(strip=True), query):
+            if size > 100 and contains_25_percent_or_less(p.get_text(strip=True), query):
+                print("skipped")
+                continue
+            elif size > 25 and contains_no_words(p.get_text(strip=True), query):
                 print("skipped")
                 continue
             conf = get_confidence(p.get_text(strip=True), query)
             if conf > maxc:
                 maxc = conf
+            if maxc == 100:
+                break
         # p_text = get_p_text(soup)
 
         # if p_text == "":
         #     continue
+        
+        print("reached")
         
         if maxc > maxp:
             maxp = maxc
@@ -238,12 +266,12 @@ def snopes_search(query):
         if maxc < minp:
             minp = maxc
             minurl = url
-
+        
     if maxp == -1:
         return {"url": "No urls found", "confidence": -1}
     elif maxp < 50:
+        print("less than return")
         return {"url": minurl, "confidence": minp}
-    
     return {"url": maxurl, "confidence": maxp}
 
 @app.route('/search', methods=['POST'])
@@ -255,6 +283,8 @@ def search():
 
         query = process_text_and_extract_keywords(query)
 
+        print(query)
+
         if source == 'gschol':
             result = gschol_search(query)
         elif source == 'snopes':
@@ -262,7 +292,7 @@ def search():
         else:
             return jsonify({'error': 'Invalid source. Please provide either "gschol" or "snopes".'}), 400
 
-        return jsonify({'percent': result.confidence, 'url': result.url})
+        return jsonify({'percent': result['confidence'], 'url': result['url']})
 
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
