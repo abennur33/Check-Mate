@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Handle the display of results
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        if (message.action === 'displayData') {
+    chrome.runtime.onMessage.addListener((data, sender, sendResponse) => {
+        if (data.data[0] == 3) {
+            print("GOT DATA")
             // Display the percent and url
-            displayResults(message.data);
+            displayResults(data.data[1]);
         }
     });
 });
