@@ -18,6 +18,44 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from fact_checking import FactChecker
 
+
+def contains_no_words(main_string, words_to_check):
+    # Split the main string into words
+    main_words = set(main_string.split())
+
+    # Check if any word from words_to_check is in main_words
+    for word in words_to_check.split():
+        if word in main_words:
+            return False
+
+    # If no matching words are found
+    return True
+
+def condense_strings(input_strings):
+    combined_strings = []
+    current_chunk = ""
+    max_words = 750
+    
+    for string in input_strings:
+        # Tokenize the current string into words
+        words = word_tokenize(string)
+        
+        # Check if adding the words exceeds the maximum limit
+        if len(words) + len(word_tokenize(current_chunk)) <= max_words:
+            # Combine the words into the current chunk
+            current_chunk += " ".join(words) + " "
+        else:
+            # Start a new chunk if adding the words would exceed the limit
+            combined_strings.append(current_chunk.strip())
+            current_chunk = " ".join(words) + " "
+    
+    # Add the last chunk to the result
+    if current_chunk:
+        combined_strings.append(current_chunk.strip())
+    
+    return combined_strings
+
+
 def process_text_and_extract_keywords(text_input):
     model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -59,12 +97,15 @@ def process_text_and_extract_keywords(text_input):
     return ' '.join(all_keywords)
 
 def get_confidence(context, claim):
-    print(f"fact checking! ({context} - '{claim}')")
+    # print(f"fact checking!")
     tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+    # print('tokenized')
     fact_checking_model = GPT2LMHeadModel.from_pretrained('fractalego/fact-checking')
+    # print('fact_checking_model')
     fact_checker = FactChecker(fact_checking_model, tokenizer)
+    # print('fact_checker')
     is_claim_true = fact_checker.validate_with_replicas(context, claim)
-    #print(f' --> {type(is_claim_true)} {is_claim_true}')
+    # print('with replicas')
     return is_claim_true.get('Y', 0.0) * 100
 
 def gschol_search(query):
@@ -86,23 +127,47 @@ def gschol_search(query):
     maxurl = ""
     minp = 100
     minurl = ""
+    i = 0
 
     for href in href_values:
+        if i > 1:
+            break
+        i += 1
         url = href
+        print(url)
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        p_text = lambda soup: ''.join([p.get_text() for p in soup.find_all('p')])
+        p_objects = soup.find_all('p')
 
-        if p_text == "":
-            continue
+        # # Use map to apply .get_text(strip=True) to each p object
+        # p_texts = list(map(lambda p: p.get_text(strip=True), p_objects))
+        # p_texts = condense_strings(p_texts)
         
-        conf = get_confidence(p_text, query)
-        if conf > maxp:
-            maxp = conf
+
+
+        maxc = 0
+        cnt = 1
+        size = len(p_objects)
+        for p in p_objects:
+            print(f"{cnt}/{size}")
+            cnt += 1
+            if contains_no_words(p.get_text(strip=True), query):
+                print("skipped")
+                continue
+            conf = get_confidence(p.get_text(strip=True), query)
+            if conf > maxc:
+                maxc = conf
+        # p_text = get_p_text(soup)
+
+        # if p_text == "":
+        #     continue
+        
+        if maxc > maxp:
+            maxp = maxc
             maxurl = url
-        if conf < minp:
-            minp = conf
+        if maxc < minp:
+            minp = maxc
             minurl = url
 
     if maxp < 50:
@@ -132,22 +197,45 @@ def snopes_search(query):
     minp = 100
     minurl = ""
 
+    i = 0
+
     for href in href_values:
+        if i > 1:
+            break
+        i += 1
         url = href
+        print(url)
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        
-        p_text = lambda soup: ''.join([p.get_text() for p in soup.find_all('p')])
 
-        if p_text == "":
-            continue
+        p_objects = soup.find_all('p')
+
+        # # Use map to apply .get_text(strip=True) to each p object
+        # p_texts = list(map(lambda p: p.get_text(strip=True), p_objects))
+        # p_texts = condense_strings(p_texts)
+
+        maxc = 0
+        cnt = 1
+        size = len(p_objects)
+        for p in p_objects:
+            print(f"{cnt}/{size}")
+            cnt += 1
+            if contains_no_words(p.get_text(strip=True), query):
+                print("skipped")
+                continue
+            conf = get_confidence(p.get_text(strip=True), query)
+            if conf > maxc:
+                maxc = conf
+        # p_text = get_p_text(soup)
+
+        # if p_text == "":
+        #     continue
         
-        conf = get_confidence(p_text, query)
-        if conf > maxp:
-            maxp = conf
+        if maxc > maxp:
+            maxp = maxc
             maxurl = url
-        if conf < minp:
-            minp = conf
+        if maxc < minp:
+            minp = maxc
             minurl = url
 
     if maxp == -1:
