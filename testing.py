@@ -5,17 +5,18 @@ from transformers import (
     GPT2Tokenizer,
 )
 
-from fact_checking import FactChecker
 import sys
 import re
 import nltk
+#nltk.download('punkt')
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
-from nltk.tag import pos_tag
+from nltk.tag import pos_tag    
 from sentence_transformers import SentenceTransformer
 from sklearn.cluster import KMeans
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+from fact_checking import FactChecker
 
 def process_text_and_extract_keywords(text_input):
     model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -58,12 +59,13 @@ def process_text_and_extract_keywords(text_input):
     return ' '.join(all_keywords)
 
 def get_confidence(context, claim):
-    print("fact checking!")
+    print(f"fact checking! ({context} - '{claim}')")
     tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     fact_checking_model = GPT2LMHeadModel.from_pretrained('fractalego/fact-checking')
     fact_checker = FactChecker(fact_checking_model, tokenizer)
     is_claim_true = fact_checker.validate_with_replicas(context, claim)
-    return is_claim_true['Y'] * 100
+    print(f' --> {type(is_claim_true)} {is_claim_true}')
+    return is_claim_true.get('Y', 0.0) * 100
 
 def gschol_search(query):
     newq = query.replace(" ", "+")

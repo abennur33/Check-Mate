@@ -1,3 +1,11 @@
+chrome.runtime.onInstalled.addListener(function () {
+    chrome.contextMenus.create({
+      id: "highlightText",
+      title: "Highlight Text",
+      contexts: ["selection"],
+    });
+  });
+  
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.action == "startApiRequest") {
       // Show loading screen or spinner in the popup
