@@ -92,7 +92,7 @@ def gschol_search(query):
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        p_text = soup.get_text()
+        p_text = lambda soup: ''.join([p.get_text() for p in soup.find_all('p')])
 
         if p_text == "":
             continue
@@ -136,7 +136,8 @@ def snopes_search(query):
         url = href
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        p_text = soup.get_text()
+        
+        p_text = lambda soup: ''.join([p.get_text() for p in soup.find_all('p')])
 
         if p_text == "":
             continue
