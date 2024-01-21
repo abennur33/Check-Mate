@@ -152,13 +152,13 @@ span:before {
 #percentage-bar-container {
   width: 80%;
   margin: 20px auto;
-  background-color: #f0f0f0;
+  background-color: #aeaeae;
   border-radius: 5px;
   overflow: hidden;
 }
 
 #percentage-bar {
-  height: 20px;
+  height: 30px;
   width: 0;
   background-color: #4caf50;
   transition: width 0.5s;

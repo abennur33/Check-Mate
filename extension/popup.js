@@ -62,17 +62,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         var urlElement = document.getElementById('url-result');
         var percentageBar = document.getElementById('percentage-bar');
 
-        percentElement.textContent = `Percentage: ${data.percent}%`;
-        urlElement.textContent = `URL: ${data.url}`;
-
-        if (data.percent < 30) {
-            percentageBar.style.backgroundColor = 'red';
-        } else if (data.percent >= 30 && data.percent < 70) {
-            percentageBar.style.backgroundColor = 'yellow';
+        if (data.percent <= 40) {
+            percentageBar.style.backgroundColor = '#FF5C5C';
+            percentElement.textContent = (100 - data.percent) 
+                + '% confident your claim is false.'
+        } else if (data.percent > 41 && data.percent <= 70) {
+            percentageBar.style.backgroundColor = '#FBFCA8';
+            percentElement.textContent = data.percent 
+                + '% confident your claim is true.'
         } else {
-            percentageBar.style.backgroundColor = 'green';
+            percentageBar.style.backgroundColor = '#ACFCA8';
+            percentElement.textContent = data.percent 
+                + '% confident your claim is true.'
         }
 
         percentageBar.style.width = data.percent + '%';
+
+        urlElement.innerHTML = `My Source: <a href="${data.url}" target="_blank">${data.url}</a>`;
     }
 });
