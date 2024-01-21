@@ -1,3 +1,4 @@
+var selection = "";
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'getAPIData') {
       // Retrieve the service info from local storage
@@ -41,5 +42,30 @@ function fetchDataFromApi(option) {
             return response.json();
         });
 }
+
+chrome.runtime.onInstalled.addListener(function () {
+    chrome.contextMenus.create({
+        title: "Open Popup",
+        contexts: ["all"],
+        id: "openPopup",
+      });
+  });
+
+//   function handleContext(info, tab) {
+//     const selectedText = info.selectionText;
+//     console.log(selectedText)
+//   }
+
+  chrome.contextMenus.onClicked.addListener(function(info) {
+    chrome.action.openPopup();
+    selection = info.selectionText;
+    console.log(selection);
+  }
+  );
+
+//   const openPopup = async() => {
+//     chrome.action.openPopup({});
+//   }
+  
 
 
