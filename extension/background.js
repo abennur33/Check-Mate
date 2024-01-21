@@ -2,7 +2,7 @@ var selection = "";
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'getAPIData') {
       // Retrieve the service info from local storage
-        fetchDataFromApi(request.data)
+        fetchDataFromApi(request.data, selection)
             .then(data => {
                 console.log(data)
                 sendResponse({data});
@@ -16,14 +16,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 });
 
-function fetchDataFromApi(option) {
+function fetchDataFromApi(option, text) {
     // Local host server URL
-    const apiUrl = 'http://127.0.0.1:5000/test';
+    const apiUrl = 'http://127.0.0.1:5000/search';
 
     // Data for the POST request
     const postData = {
         source: option,
-        query: 'test'
+        query: text
     };
 
     // Make the API call
