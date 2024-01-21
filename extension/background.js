@@ -18,12 +18,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 function fetchDataFromApi(option, text) {
     // Local host server URL
-    const apiUrl = 'http://127.0.0.1:5000/search';
+    const apiUrl = 'http://127.0.0.1:5000/test';
 
     // Data for the POST request
     const postData = {
         source: option,
-        query: text
+        query: "test"
     };
 
     // Make the API call

@@ -61,19 +61,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         var percentElement = document.getElementById('percentage');
         var urlElement = document.getElementById('url-result');
         var percentageBar = document.getElementById('percentage-bar');
+        var disclaimerNote = document.getElementById('disclaimer');
 
-        if (data.percent <= 40) {
+        if (data.percent >= 0 && data.percent <= 20) {
             percentageBar.style.backgroundColor = '#FF5C5C';
             percentElement.textContent = (100 - data.percent) 
-                + '% confident your claim is false.'
+                + '% confident your claim is false.';
+            disclaimerNote.textContent = 'Disclaimer: Although we are fairly confident in our results, '
+                + ' there is a chance that there was not enough data to make a conclusive result.'
+        } else if (data.percent > 21 && data.percent <= 40) {
+            percentageBar.style.backgroundColor = '#FF5C5C';
+            percentElement.textContent = (100 - data.percent) 
+                + '% confident your claim is false.';
         } else if (data.percent > 41 && data.percent <= 70) {
             percentageBar.style.backgroundColor = '#FBFCA8';
             percentElement.textContent = data.percent 
-                + '% confident your claim is true.'
+                + '% confident your claim is true.';
+        } else if (data.percent > 70 && data.percent <= 80) {
+            percentageBar.style.backgroundColor = '#ACFCA8';
+            percentElement.textContent = data.percent 
+                + '% confident your claim is true.';
+        } else if (data.percent < 0) {
+            urlElement.style.display = 'none';
+            percentageBar.style.display = 'none';
+            disclaimerNote.style.display = 'none';
+            percentElement.textContent = 'not able to find any information.  Apologies...';
         } else {
             percentageBar.style.backgroundColor = '#ACFCA8';
             percentElement.textContent = data.percent 
-                + '% confident your claim is true.'
+                + '% confident your claim is true.';
         }
 
         percentageBar.style.width = data.percent + '%';

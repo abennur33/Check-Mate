@@ -181,13 +181,13 @@ def search():
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
 @app.route('/test', methods=['POST'])
-def search():
+def test():
     try:
         data = request.get_json()
         source = data.get('source', '')
         query = data.get('query', '')
 
-        testpercent = 100
+        testpercent = 10
         testval = source + " " + query + " test"
 
         return jsonify({'percent': testpercent, 'url': testval})
