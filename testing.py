@@ -84,17 +84,29 @@ def gschol_search(query):
 
     maxp = 0
     maxurl = ""
+    minp = 100
+    minurl = ""
 
     for href in href_values:
         url = href
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        p_text = lambda soup: ''.join([p.get_text() for p in soup.find_all('p')])
+
+        p_text = soup.get_text()
+
+        if p_text == "":
+            continue
         
         conf = get_confidence(p_text, query)
         if conf > maxp:
             maxp = conf
             maxurl = url
+        if conf < minp:
+            minp = conf
+            minurl = url
+
+    if maxp < 50:
+        return {"url": minurl, "confidence": minp}
     
     return {"url": maxurl, "confidence": maxp}
     
@@ -117,18 +129,28 @@ def snopes_search(query):
     
     maxp = 0
     maxurl = ""
+    minp = 100
+    minurl = ""
 
     for href in href_values:
         url = href
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        p_elements = soup.find_all('p')
-        for p in p_elements:
-            p_text = p.get_text()
-            conf = get_confidence(p_text, query)
-            if conf > maxp:
-                maxp = conf
-                maxurl = url
+        p_text = soup.get_text()
+
+        if p_text == "":
+            continue
+        
+        conf = get_confidence(p_text, query)
+        if conf > maxp:
+            maxp = conf
+            maxurl = url
+        if conf < minp:
+            minp = conf
+            minurl = url
+
+    if maxp < 50:
+        return {"url": minurl, "confidence": minp}
     
     return {"url": maxurl, "confidence": maxp}
 
