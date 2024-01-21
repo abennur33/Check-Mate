@@ -2,28 +2,51 @@
 <html lang="en">
 
 <head>
-  <title>Hello World</title>
+  <title>Check-Mate!</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Montserrat|Roboto|Open+Sans|Lato|Poppins|Proxima+Nova|Avenir&display=swap">
   <link rel="stylesheet" href="popup.css" />
+  <link rel="stylesheet" href="loading-screen.css" />
+  <link rel="stylesheet" href="results.css" />
 </head>
 
 <body>
-  <h1 id="title">Check-Mate Accuracy Checker 4000</h1>
-  <h3 id="title">Version 1.0.0</h3>
+
+  <!-- Popup Section -->
   <div id="popup" class="popup">
-    <p>How would you like to check your information by?</p>
-    <label>
-      <input id="button" type="radio" name="options" value="option1"> Political/Current Events
-    </label>
+    <img id="image1" src="images/logo.png">
+    <img id="image1" src="images/sal-the-robot.png">
+    <p id="text"> How would you like to check your information by?</p>
+    <button id="button-political">Political/Current Events</button>
     <br>
-    <label>
-      <input id="button" type="radio" name="options" value="option2"> Scientific/Scholarly
-    </label>
-    <button id="check-button">Check Accuracy</button>
+    <button id="button-scientific">Scientific/Intellectual</button>
   </div>
 
+  <!-- Loading Screen Section -->
+  <div class="loading-screen" style="display: none;">
+    <img id="image1" src="images/logo.png">
+    <div class="ring">Loading
+      <span></span>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div id="results" style="display: none;">
+    <img id="image1" src="images/logo.png">
+    <h1 id="title">Results</h1>
+    <p id="percentage">Percentage: Loading...</p>
+    <p id="url-result">URL: Loading...</p>
+    <div id="percentage-bar-container">
+      <div id="percentage-bar"></div>
+    </div>
+  </div>
+
+  <!-- Include necessary JavaScript files for each section -->
   <script src="popup.js"></script>
+  <script src="loading-screen.js"></script>
+  <script src="results.js"></script>
 </body>
 
 </html>
