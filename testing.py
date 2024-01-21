@@ -127,7 +127,7 @@ def snopes_search(query):
             href_values.append(href_value)
 
     
-    maxp = 0
+    maxp = -1
     maxurl = ""
     minp = 100
     minurl = ""
@@ -149,7 +149,9 @@ def snopes_search(query):
             minp = conf
             minurl = url
 
-    if maxp < 50:
+    if maxp == -1:
+        return {"url": "No urls found", "confidence": -1}
+    elif maxp < 50:
         return {"url": minurl, "confidence": minp}
     
     return {"url": maxurl, "confidence": maxp}
