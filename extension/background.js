@@ -51,21 +51,12 @@ chrome.runtime.onInstalled.addListener(function () {
       });
   });
 
-//   function handleContext(info, tab) {
-//     const selectedText = info.selectionText;
-//     console.log(selectedText)
-//   }
-
   chrome.contextMenus.onClicked.addListener(function(info) {
     chrome.action.openPopup();
     selection = info.selectionText;
     console.log(selection);
   }
   );
-
-//   const openPopup = async() => {
-//     chrome.action.openPopup({});
-//   }
   
 
 

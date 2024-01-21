@@ -64,7 +64,7 @@ def get_confidence(context, claim):
     fact_checking_model = GPT2LMHeadModel.from_pretrained('fractalego/fact-checking')
     fact_checker = FactChecker(fact_checking_model, tokenizer)
     is_claim_true = fact_checker.validate_with_replicas(context, claim)
-    print(f' --> {type(is_claim_true)} {is_claim_true}')
+    #print(f' --> {type(is_claim_true)} {is_claim_true}')
     return is_claim_true.get('Y', 0.0) * 100
 
 def gschol_search(query):
