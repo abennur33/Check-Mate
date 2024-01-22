@@ -47,15 +47,19 @@ We wanted to build an app that could use AI to empower people with a safeguard a
 
 ## Installation
 
-1. **Download:**
+1. **Download Extension:**
    - Clone or download the Check-Mate repository to your local machine.
 
-2. **Load Extension:**
+2. **Download Chrome Canary:**
+   - Download the developer version of Chrome called "Chrome Canary".
+   - This extension uses some beta technologies not available to stable Chrome.
+
+3. **Load Extension:**
    - Open Chrome and navigate to `chrome://extensions/`.
    - Enable "Developer mode" in the top right corner.
    - Click "Load unpacked" and select the folder containing the extension files.
 
-3. **Usage:**
+4. **Usage:**
    - Highlight text on a web page, right-click, and select the "Check-Mate" option to initiate fact-checking.
   
 ## Technical Specifications
