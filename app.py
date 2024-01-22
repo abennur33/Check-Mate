@@ -8,7 +8,7 @@ from transformers import (
 import sys
 import re
 import nltk
-#nltk.download('punkt')
+# nltk.download('punkt')
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk.tag import pos_tag    
@@ -17,6 +17,7 @@ from sklearn.cluster import KMeans
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from fact_checking import FactChecker
+import time
 
 app = Flask(__name__)
 
@@ -71,6 +72,7 @@ def condense_strings(input_strings):
 
 
 def process_text_and_extract_keywords(text_input):
+    print("processing text")
     model = SentenceTransformer('all-MiniLM-L6-v2')
 
     def preprocess_text(text):
@@ -92,21 +94,27 @@ def process_text_and_extract_keywords(text_input):
         num_clusters = min(5, len(sentences))
         kmeans = KMeans(n_clusters=num_clusters, random_state=0).fit(cosine_sim)
         return kmeans.labels_
+    
+    try:
+        sentences = sent_tokenize(text_input)
+        all_keywords = []
 
-    sentences = sent_tokenize(text_input)
-    all_keywords = []
-
-    if len(sentences) == 1:
-        all_keywords.extend(extract_keywords(sentences[0]))
-    else:
-        clusters = cluster_sentences(sentences)
-        for cluster in range(max(clusters) + 1):
-            cluster_keywords = []
-            for i, sentence in enumerate(sentences):
-                if clusters[i] == cluster:
-                    cluster_keywords.extend(extract_keywords(sentence))
-            unique_keywords = list(set(cluster_keywords))
-            all_keywords.extend(unique_keywords)
+        if len(sentences) == 1:
+            all_keywords.extend(extract_keywords(sentences[0]))
+        else:
+            clusters = cluster_sentences(sentences)
+            for cluster in range(max(clusters) + 1):
+                cluster_keywords = []
+                for i, sentence in enumerate(sentences):
+                    if clusters[i] == cluster:
+                        cluster_keywords.extend(extract_keywords(sentence))
+                unique_keywords = list(set(cluster_keywords))
+                all_keywords.extend(unique_keywords)
+    except Exception as e:
+        print(e)
+        all_keywords = text_input.split()
+        print("error processing text")
+    print("done processing")
 
     return ' '.join(all_keywords)
 
